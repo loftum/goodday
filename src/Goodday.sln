@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goodday.Core", "Goodday.Core\Goodday.Core.csproj", "{049C5821-379F-4788-BD76-58674B9550EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goodday.ExampleServer", "Goodday.ExampleServer\Goodday.ExampleServer.csproj", "{FB5807F7-0387-4256-B5CC-210B0E9A6DF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goodday.ExampleClient", "Goodday.ExampleClient\Goodday.ExampleClient.csproj", "{A3D5EA5B-E518-444C-BDE7-69DCB95BBACE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{049C5821-379F-4788-BD76-58674B9550EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049C5821-379F-4788-BD76-58674B9550EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{049C5821-379F-4788-BD76-58674B9550EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{049C5821-379F-4788-BD76-58674B9550EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5807F7-0387-4256-B5CC-210B0E9A6DF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5807F7-0387-4256-B5CC-210B0E9A6DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5807F7-0387-4256-B5CC-210B0E9A6DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5807F7-0387-4256-B5CC-210B0E9A6DF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3D5EA5B-E518-444C-BDE7-69DCB95BBACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3D5EA5B-E518-444C-BDE7-69DCB95BBACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3D5EA5B-E518-444C-BDE7-69DCB95BBACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D5EA5B-E518-444C-BDE7-69DCB95BBACE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
