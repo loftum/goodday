@@ -11,9 +11,7 @@ namespace Goodday.Core.Domain
         
         public byte[] Write(Message message)
         {
-            var header = message.Header;
-            Sanitize(message);
-            Write(header);
+            WriteHeader(message);
             foreach (var question in message.Questions)
             {
                 Write(question);
@@ -27,13 +25,43 @@ namespace Goodday.Core.Domain
             return _bytes.ToArray();
         }
 
+        private void WriteHeader(Message message)
+        {
+            var header = CreateHeader(message);
+            _bytes.AddRange(header.Id.ToBytes());
+            _bytes.AddRange(header.Flags.ToBytes());
+            _bytes.AddRange(header.QDCount.ToBytes());
+            _bytes.AddRange(header.ANCount.ToBytes());
+            _bytes.AddRange(header.NSCount.ToBytes());
+            _bytes.AddRange(header.ARCount.ToBytes());
+        }
+        
+        private static Header CreateHeader(Message message)
+        {
+            return new Header
+            {
+                Id = message.Id,
+                QR = message.Type != MessageType.Query,
+                OPCODE = message.OpCode,
+                AA = message.AuthoriativeAnswer,
+                TC = message.Truncation,
+                RD = message.RecursionDesired,
+                RA = message.RecursionAvailable,
+                Z = 0,
+                RCODE = message.ResponseCode,
+                QDCount = (ushort) message.Questions.Count,
+                ANCount = (ushort) message.Answers.Count,
+                NSCount = (ushort) message.Authorities.Count,
+                ARCount = (ushort) message.Additionals.Count
+            };
+        }
+
         private void Write(ResourceRecord resourceRecord)
         {
             _bytes.AddRange(DomainNameToBytes(resourceRecord.Name));
             _bytes.AddRange(((ushort)resourceRecord.Type).ToBytes());
             _bytes.AddRange(((ushort)resourceRecord.Class).ToBytes());
             _bytes.AddRange(resourceRecord.Ttl.ToBytes());
-            //_bytes.AddRange(resourceRecord.RDLength.ToBytes());
             Write(resourceRecord.Record);
         }
 
@@ -92,24 +120,7 @@ namespace Goodday.Core.Domain
             _bytes.AddRange(((ushort) question.QClass).ToBytes());
         }
         
-        private static void Sanitize(Message message)
-        {
-            var header = message.Header;
-            header.QDCount = (ushort) message.Questions.Count;
-            header.ANCount = (ushort) message.Answers.Count;
-            header.NSCount = (ushort) message.Authorities.Count;
-            header.ARCount = (ushort) message.Additionals.Count;
-        }
-
-        private void Write(Header header)
-        {
-            _bytes.AddRange(header.Id.ToBytes());
-            _bytes.AddRange(header.Flags.ToBytes());
-            _bytes.AddRange(header.QDCount.ToBytes());
-            _bytes.AddRange(header.ANCount.ToBytes());
-            _bytes.AddRange(header.NSCount.ToBytes());
-            _bytes.AddRange(header.ARCount.ToBytes());
-        }
+        
         
         static byte[] DomainNameToBytes(string src)
         {

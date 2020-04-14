@@ -68,7 +68,7 @@ namespace Goodday.Core
                 try
                 {
                     var result = await client.ReceiveAsync();
-                    var message = MessageParser.Parse(result.Buffer);
+                    var message = MessageParser.Decode(result.Buffer);
                     Console.WriteLine("Got");
                     Console.WriteLine(message);
                 }
@@ -83,11 +83,8 @@ namespace Goodday.Core
         {
             return new Message
             {
-                Header =
-                {
-                    Id = id,
-                    QR = false
-                },
+                Id = id,
+                Type = MessageType.Query,
                 Questions = new List<Question>
                 {
                     new Question

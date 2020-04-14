@@ -31,7 +31,14 @@ namespace Goodday.Core.Domain
         {
             var request = new Message
             {
-                Header = header
+                Id = header.Id,
+                Type = header.QR ? MessageType.Response : MessageType.Query,
+                OpCode = header.OPCODE,
+                AuthoriativeAnswer = header.AA,
+                Truncation = header.TC,
+                RecursionDesired = header.RD,
+                RecursionAvailable = header.RA,
+                ResponseCode = header.RCODE
             };
             
             for (var ii = 0; ii < header.QDCount; ii++)
@@ -65,13 +72,13 @@ namespace Goodday.Core.Domain
                 Type = (RRType) ReadUint16(),
                 Class = (Class) ReadUint16(),
                 Ttl = ReadUint32(),
-                RDLength = ReadUint16(),
             };
-            record.Record = ReadRecord(record.Type, record.RDLength);
+            var rdLength = ReadUint16();
+            record.Record = ReadRecord(record.Type, rdLength);
             return record;
         }
 
-        private IRecord ReadRecord(RRType type, ushort length)
+        private IRecord ReadRecord(RRType type, ushort rdLength)
         {
             switch (type)
             {
@@ -88,7 +95,7 @@ namespace Goodday.Core.Domain
                 case RRType.TXT:
                     return new TextRecord
                     {
-                        Text = ReadText(length)
+                        Text = ReadText(rdLength)
                     };
                 case RRType.SRV:
                     return new ServiceRecord

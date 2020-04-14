@@ -1,7 +1,6 @@
 namespace Goodday.Core.Domain
 {
-    public interface IMessage : ICanTurnIntoBytes
+    public interface IMessage
     {
-        Header Header { get; }
     }
 }

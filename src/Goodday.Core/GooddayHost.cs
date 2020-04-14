@@ -29,7 +29,7 @@ namespace Goodday.Core
             _clients = Zeroconf.CreateUdpClients().ToList();
         }
 
-        public async Task StartAsync()
+        public void Start()
         {
             IsRunning = true;
             _run = RunAsync();
@@ -42,7 +42,7 @@ namespace Goodday.Core
                 IsRunning = false;
                 var goodbye = GetGoodbyeMessage();
                 Console.WriteLine(goodbye);
-                var data = new MessageWriter().Write(goodbye);
+                var data = MessageParser.Encode(goodbye);
                 await _clients.AllSendAsync(data, data.Length, Zeroconf.BroadcastEndpoint);
             }
             catch (Exception e)
@@ -64,26 +64,26 @@ namespace Goodday.Core
         private async Task ReceiveFromAsync(UdpClient client)
         {
             var hello = CreateResponse(0, 120);
-            var bytes = new MessageWriter().Write(hello);
+            var bytes = MessageParser.Encode(hello);
             await client.SendAsync(bytes, bytes.Length, Zeroconf.BroadcastEndpoint);
             while (IsRunning)
             {
                 try
                 {
                     var result = await client.ReceiveAsync();
-                    var message = MessageParser.Parse(result.Buffer);
+                    var message = MessageParser.Decode(result.Buffer);
 
                     Console.WriteLine("Got");
                     Console.WriteLine(message);
                     
-                    if (!message.Header.QR)
+                    if (message.Type == MessageType.Query)
                     {
                         if (message.Questions.Any(q => q.QType == QType.PTR && q.QName == $"{_serviceType}.{_domain}."))
                         {
-                            var response = CreateResponse(message.Header.Id, 120);
+                            var response = CreateResponse(message.Id, 120);
                             Console.WriteLine("Hey! Someone asked for me!");
                             Console.WriteLine(response);
-                            var packet = new MessageWriter().Write(response);
+                            var packet = MessageParser.Encode(response);
                             await client.SendAsync(packet, packet.Length, result.RemoteEndPoint);
                         }   
                     }
@@ -104,13 +104,9 @@ namespace Goodday.Core
         {
             return new Message
             {
-                Header = new Header
-                {
-                    Id = id,
-                    QR = true,
-                    AA = true,
-                    ANCount = 3
-                },
+                Id = id,
+                Type = MessageType.Response,
+                AuthoriativeAnswer = true,
                 Answers = new List<ResourceRecord>
                 {
                     new ResourceRecord

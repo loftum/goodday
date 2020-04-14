@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Goodday.Core.Domain.Types;
 
@@ -20,6 +21,8 @@ namespace Goodday.Core.Domain
 		{
 			get
 			{
+				var a = new BitArray(new byte[2]);
+				
 				var data = new List<byte>();
 				data.AddRange(Id.ToBytes());
 				data.AddRange(Flags.ToBytes());

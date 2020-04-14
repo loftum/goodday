@@ -24,7 +24,7 @@ namespace Bonjour.Server
                                 source.Cancel();
                                 host.StopAsync().Wait(2000);
                             };
-                            await host.StartAsync();
+                            host.Start();
                             Console.ReadLine();
                         }    
                     }
